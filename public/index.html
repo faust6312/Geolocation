@@ -153,13 +153,13 @@
       hideResult();
 
       try {
-        console.log('发起请求到 /api/query'); // 调试信息
+        console.log('发起请求到 /api/query');
         const response = await fetch('/api/query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ip })
         });
-        console.log('响应状态:', response.status); // 调试信息
+        console.log('响应状态:', response.status);
         if (!response.ok) {
           const text = await response.text();
           throw new Error(`服务器错误: ${response.status} - ${text}`);
@@ -203,8 +203,9 @@
     function hideResult() { result.style.display = 'none'; }
 
     function updateMap(lat, lng) {
-      const apiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // 替换为你的 API Key
-      mapFrame.src = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${lat},${lng}&zoom=13`;
+      const ak = 'nSxiPohfziUaCuONe4ViUP2N'; // 替换为你的百度地图 AK
+      // 百度地图嵌入 URL，中心点为经纬度，缩放级别为 13
+      mapFrame.src = `https://api.map.baidu.com/marker?location=${lat},${lng}&title=IP位置&content=IP位置&output=html&coord_type=gcj02&zoom=13&ak=${ak}`;
     }
   </script>
 </body>
