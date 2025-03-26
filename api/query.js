@@ -1,43 +1,38 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: '·½·¨²»ÔÊĞí' });
+    return res.status(405).json({ error: 'æ–¹æ³•ä¸å…è®¸' });
   }
 
   try {
     const { ip } = req.body;
 
-    // IP ¸ñÊ½ÑéÖ¤
     const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
     if (!ipRegex.test(ip)) {
-      return res.status(400).json({ error: 'ÎŞĞ§µÄIPµØÖ·¸ñÊ½' });
+      return res.status(400).json({ error: 'æ— æ•ˆçš„IPåœ°å€æ ¼å¼' });
     }
 
-    // ¼ì²é±£ÁôµØÖ·
     if (isReservedIP(ip)) {
-      return res.status(400).json({ error: '²»Ö§³Ö²éÑ¯ÄÚÍøIP»ò±£ÁôµØÖ·' });
+      return res.status(400).json({ error: 'ä¸æ”¯æŒæŸ¥è¯¢å†…ç½‘IPæˆ–ä¿ç•™åœ°å€' });
     }
 
-    // »ñÈ¡µØÀíÎ»ÖÃ
     const ipLocResponse = await fetch(`https://apimobile.meituan.com/locate/v2/ip/loc?rgeo=true&ip=${ip}`);
     if (!ipLocResponse.ok) {
-      return res.status(502).json({ error: `µØÀíÎ»ÖÃAPIÇëÇóÊ§°Ü: ${ipLocResponse.status}` });
+      return res.status(502).json({ error: `åœ°ç†ä½ç½®APIè¯·æ±‚å¤±è´¥: ${ipLocResponse.status}` });
     }
     const ipLocData = await ipLocResponse.json();
 
     const lng = ipLocData.data?.lng;
     const lat = ipLocData.data?.lat;
     if (!lng || !lat) {
-      return res.status(400).json({ error: 'ÎŞ·¨»ñÈ¡¾­Î³¶ÈĞÅÏ¢' });
+      return res.status(400).json({ error: 'æ— æ³•è·å–ç»çº¬åº¦ä¿¡æ¯' });
     }
 
-    // »ñÈ¡ÏêÏ¸µØÖ·
     const detailResponse = await fetch(`https://apimobile.meituan.com/group/v1/city/latlng/${lat},${lng}?tag=0`);
     if (!detailResponse.ok) {
-      return res.status(502).json({ error: `ÏêÏ¸µØÖ·APIÇëÇóÊ§°Ü: ${detailResponse.status}` });
+      return res.status(502).json({ error: `è¯¦ç»†åœ°å€APIè¯·æ±‚å¤±è´¥: ${detailResponse.status}` });
     }
     const detailData = await detailResponse.json();
 
-    // ·µ»Ø½á¹û
     const result = {
       ip,
       location: {
