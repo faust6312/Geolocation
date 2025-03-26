@@ -16,6 +16,13 @@
       "dest": "/api/$1"
     },
     {
+      "src": "/style.css",
+      "dest": "/public/style.css",
+      "headers": {
+        "Content-Type": "text/css; charset=utf-8"
+      }
+    },
+    {
       "src": "/(.*)",
       "dest": "/public/$1",
       "headers": {
