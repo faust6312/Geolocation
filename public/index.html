@@ -17,7 +17,6 @@
       align-items: center;
       color: #fff;
     }
-
     .container {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 12px;
@@ -27,7 +26,6 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(10px);
     }
-
     h1 {
       font-size: 2rem;
       font-weight: 600;
@@ -35,12 +33,10 @@
       margin-bottom: 30px;
       color: #60a5fa;
     }
-
     .input-group {
       display: flex;
       gap: 10px;
     }
-
     input {
       flex: 1;
       padding: 12px;
@@ -51,11 +47,9 @@
       font-size: 1rem;
       outline: none;
     }
-
     input::placeholder {
       color: rgba(255, 255, 255, 0.7);
     }
-
     button {
       padding: 12px 20px;
       background: #60a5fa;
@@ -66,33 +60,27 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-
     button:hover {
       background: #3b82f6;
     }
-
     .loading, .error, .result {
       margin-top: 20px;
       display: none;
     }
-
     .loading {
       text-align: center;
       color: #60a5fa;
     }
-
     .error {
       color: #f87171;
       background: rgba(248, 113, 113, 0.1);
       padding: 10px;
       border-radius: 8px;
     }
-
     .result {
       display: grid;
       gap: 10px;
     }
-
     .result-item {
       display: flex;
       justify-content: space-between;
@@ -100,11 +88,9 @@
       background: rgba(255, 255, 255, 0.05);
       border-radius: 8px;
     }
-
     .result-item span:first-child {
       color: #94a3b8;
     }
-
     .address {
       margin-top: 20px;
       padding: 15px;
@@ -112,7 +98,6 @@
       border-radius: 8px;
       color: #a3e635;
     }
-
     .map-container {
       margin-top: 20px;
       height: 300px;
@@ -168,11 +153,17 @@
       hideResult();
 
       try {
+        console.log('发起请求到 /api/query'); // 调试信息
         const response = await fetch('/api/query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ip })
         });
+        console.log('响应状态:', response.status); // 调试信息
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(`服务器错误: ${response.status} - ${text}`);
+        }
         const data = await response.json();
 
         if (data.error) {
@@ -197,7 +188,8 @@
         updateMap(data.location.lat, data.location.lng);
         showResult();
       } catch (err) {
-        showError('查询失败，请稍后重试');
+        showError(`查询失败: ${err.message}`);
+        console.error('错误详情:', err);
       } finally {
         hideLoading();
       }
